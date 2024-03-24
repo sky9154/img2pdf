@@ -1,0 +1,10 @@
+{
+  "application": {
+    "name": "圖片轉 PDF",
+    "size": {
+      "width": 350,
+      "height": 230
+    },
+    "icon": "assets/images/icon.ico"
+  }
+}

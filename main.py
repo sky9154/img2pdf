@@ -1,71 +1,47 @@
 import sys
-from PyQt5.QtWidgets import (
-  QApplication, QLabel, QMainWindow,
-  QVBoxLayout, QWidget, QPushButton,
-  QFileDialog
-)
-from PyQt5.QtGui import QIcon, QCursor
-from PyQt5.QtCore import Qt, QDir
-from functions.img2pdf import img2pdf
+import json
+from PySide6 import QtWidgets, QtGui
+from components import Label, Button
+from functions.ImageToPDF import ImageToPDF
 
 
-class App(QMainWindow):
+with open('assets/data/config.json', 'r') as config_json:
+  config = json.load(config_json)
+
+application = config.get('application')
+
+class App(QtWidgets.QMainWindow):
   def __init__(self):
     super().__init__()
-    self.init()
 
-  def init(self):
-    central_widget = QWidget(self)
-    self.setCentralWidget(central_widget)
-    self.setFixedSize(400, 200)
-    self.setWindowIcon(QIcon('images/icon.ico'))
-
-    layout = QVBoxLayout(central_widget)
-
-    self.label = QLabel(self)
-    self.label.setAlignment(Qt.AlignCenter)
-
-    self.button = QPushButton('', self)
-    self.button.setFixedSize(150, 150)
-    self.button.setCursor(Qt.PointingHandCursor)
-    self.button.clicked.connect(self.show_dialog)
-    self.button.setIcon(QIcon('images/upload.png'))
-    self.button.setIconSize(self.button.size())
-    self.button.setStyleSheet('background-color: transparent;')
-
-    h_layout = QVBoxLayout()
-    h_layout.addWidget(self.button, alignment=Qt.AlignHCenter)
-    h_layout.addStretch(1)
-
-    layout.addWidget(self.label)
-    layout.addLayout(h_layout)
-
-    self.setWindowTitle('圖片轉 PDF')
+    self.setWindowTitle(application['name'])
+    self.setFixedSize(application['size']['width'], application['size']['height'])
+    self.setWindowIcon(QtGui.QIcon(application['icon']))
     self.setGeometry(300, 300, 400, 200)
 
-  def set_loading_cursor(self):
-    QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+    self.main_widget = QtWidgets.QWidget()
+    self.setCentralWidget(self.main_widget)
 
-  def restore_default_cursor(self):
-    QApplication.restoreOverrideCursor()
+    self.main_layout = QtWidgets.QVBoxLayout(self.main_widget)
+    self.message_label = Label.MessageLabel()
+    self.upload_button = Button.UploadButton()
 
-  def show_dialog(self):
-    default_path = QDir.homePath() + '/Downloads'
-    save_path = QDir.homePath() + '/Desktop'
-    folder_path = QFileDialog.getExistingDirectory(self, '選擇資料夾', default_path)
+    self.main_layout.addWidget(self.message_label)
+    self.main_layout.addWidget(self.upload_button)
 
-    if folder_path:
-      self.set_loading_cursor()
-      img2pdf(self, folder_path, save_path)
-      self.restore_default_cursor()
-      self.label.setText('轉換完成！')
+    self.upload_button.clicked.connect(self.click)
 
-    self.setWindowTitle('圖片轉 PDF')
+  def click(self):
+    img2pdf = ImageToPDF(self)
+    img2pdf.upload()
+    img2pdf.export()
+    img2pdf.img2pdf()
+
 
 if __name__ == '__main__':
-  app = QApplication(sys.argv)
+  app = QtWidgets.QApplication(sys.argv)
 
   window = App()
   window.show()
 
-  sys.exit(app.exec_())
+  sys.exit(app.exec())
