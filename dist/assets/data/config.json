@@ -1,0 +1,10 @@
+{
+  "application": {
+    "name": "Image to PDF Converter",
+    "size": {
+      "width": 350,
+      "height": 230
+    },
+    "icon": "assets/images/icon.ico"
+  }
+}

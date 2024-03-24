@@ -2,7 +2,6 @@ from PySide6 import QtWidgets, QtGui, QtCore
 from PIL import Image
 from os.path import join, basename
 from os import listdir
-from tqdm import tqdm
 
 
 class ImageToPDF:
@@ -13,7 +12,7 @@ class ImageToPDF:
 
   def upload(self) -> None:
     file_dialog = QtWidgets.QFileDialog()
-    file_dialog.setWindowTitle('選擇資料夾')
+    file_dialog.setWindowTitle('Choose PDF folder')
     file_dialog.setFileMode(QtWidgets.QFileDialog.Directory)
     file_dialog.setDirectory(self.upload_path)
 
@@ -23,7 +22,7 @@ class ImageToPDF:
 
   def export(self) -> None:
     file_dialog = QtWidgets.QFileDialog()
-    file_dialog.setWindowTitle('選擇儲存位置')
+    file_dialog.setWindowTitle('Choose storage location')
     file_dialog.setFileMode(QtWidgets.QFileDialog.Directory)
     file_dialog.setDirectory(self.export_path)
 
@@ -36,7 +35,7 @@ class ImageToPDF:
 
   def finish(self):
     QtWidgets.QApplication.restoreOverrideCursor()
-    self.app.message_label.setText('轉換完成！')
+    self.app.message_label.setText('Conversion completed!')
 
   def img2pdf(self) -> None:
     name = basename(self.upload_path)
@@ -53,7 +52,7 @@ class ImageToPDF:
       except Exception:
         pass
 
-    sources = [Image.open(file).convert('RGB') for file in tqdm(image_list, desc=name)]
+    sources = [Image.open(file).convert('RGB') for file in image_list]
     sources[0].save(pdf_path, 'pdf', save_all=True, append_images=sources[1:])
 
     self.finish()
