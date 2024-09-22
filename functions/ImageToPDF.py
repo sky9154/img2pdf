@@ -1,4 +1,5 @@
 from PySide6 import QtWidgets, QtGui, QtCore
+from PyPDF2 import PdfReader, PdfWriter
 from PIL import Image
 from os.path import join, basename
 from os import listdir
@@ -54,5 +55,19 @@ class ImageToPDF:
 
     sources = [Image.open(file).convert('RGB') for file in image_list]
     sources[0].save(pdf_path, 'pdf', save_all=True, append_images=sources[1:])
+
+    if ' - ' in name:
+      reader = PdfReader(pdf_path)
+      writer = PdfWriter()
+
+      author = name.split(' - ')[0]
+
+      for page in reader.pages:
+        writer.add_page(page)
+
+      writer.add_metadata({ '/Author': author })
+
+      with open(pdf_path, 'wb') as pdf:
+        writer.write(pdf)
 
     self.finish()

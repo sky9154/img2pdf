@@ -5,7 +5,7 @@ from components import Label, Button
 from functions.ImageToPDF import ImageToPDF
 
 
-with open('assets/data/config.json', 'r') as config_json:
+with open('assets/data/config.json', 'rb') as config_json:
   config = json.load(config_json)
 
 application = config.get('application')
