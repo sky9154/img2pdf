@@ -46,9 +46,15 @@ class ImageToPDF:
 
     self.loading()
 
-    for image in listdir(self.upload_path):
+    images = listdir(self.upload_path)
+
+    if '(' in images[0] or ')' in images[0]:
+      images = sorted(images, key=lambda x: int(x.split('(')[1].split(')')[0]))
+
+    for image in images:
       try:
         if Image.open(join(self.upload_path, image)):
+
           image_list.append(join(self.upload_path, image))
       except Exception:
         pass
