@@ -10,8 +10,6 @@ Users can select a folder containing images, choose where to save the output fil
 
 The application is built with PySide6 for the graphical interface and uses Pillow and PyPDF2 for image and PDF processing.
 
-- **Repository**: [GitHub Repository](https://github.com/sky9154/img2pdf)
-
 ## Screenshots
 
 ![Demo](/assets/docs/demo.png)
